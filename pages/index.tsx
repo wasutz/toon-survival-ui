@@ -1,10 +1,13 @@
 import type { NextPage } from 'next'
+import { useTheme } from "next-themes";
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 
 const Home: NextPage = () => {
+  const {resolvedTheme, setTheme} = useTheme();
+
   return (
     <div className={styles.container}>
       <Head>
@@ -19,7 +22,10 @@ const Home: NextPage = () => {
         </h1>
 
         <Stack spacing={5} direction="column">
-          <Button variant="outlined">Learn more</Button>
+          <Button onClick={() => setTheme(resolvedTheme === "light" ? "dark" : "light")}
+            color="primary" variant="contained">
+              Change theme
+          </Button>
         </Stack>
       </main>
     </div>
