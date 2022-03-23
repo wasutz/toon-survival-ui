@@ -26,6 +26,7 @@ const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
       <CacheProvider value={emotionCache}>
         <Head>
           <meta name="viewport" content="initial-scale=1, width=device-width" />
+          <link rel="icon" href="/favicon.ico" />
         </Head>
         <MUIThemeProvider>
           <Component {...pageProps} />
