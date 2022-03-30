@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 
 const HeroSection = styled.section`
     min-height: calc(100vh - 70px);
@@ -14,4 +14,10 @@ const JoinButton =  styled(Button)`
     padding: 0.75rem 1.5rem;
 `
 
-export {HeroSection, JoinButton};
+const GreyText = styled(Typography)`
+    color: #78909c;
+    margin: 1rem 0;
+    font-size: 1.25rem;
+`
+
+export {HeroSection, JoinButton, GreyText};

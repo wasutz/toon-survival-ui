@@ -3,7 +3,8 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Layout from '../components/Layout';
 import Image from 'next/image'
-import {HeroSection, JoinButton}  from '../styles/Home.styled';
+import {HeroSection, JoinButton, GreyText}  from '../styles/Home.styled';
+import Typewriter from 'typewriter-effect';
 
 const Home: NextPage = () => {
   return (
@@ -20,9 +21,24 @@ const Home: NextPage = () => {
               <Image src="/images/male1_wide.png" alt="Male survival" width="256" height="384" />
             </Grid>
             <Grid item xs={12} md={6} sx={{textAlign: {xs: 'center', md: 'left'}}}>
-              <Typography variant="h2" component="h2" sx={{fontSize: {lg: 50, md: 41, xs: 32}}}>
-                A new wave of collectibles is about to hit the blockchain.
+              <Typography variant="h2" component="h2" sx={{fontSize: {lg: 45, md: 39, xs: 33}}}>
+                A new wave of
               </Typography>
+              <Typography variant="h2" component="h2" color="secondary" sx={{fontSize: {lg: 45, md: 39, xs: 33}}}>
+                <Typewriter
+                    options={{
+                      strings: ['NFTS', 'COLLECTIBLES'],
+                      autoStart: true,
+                      loop: true,
+                    }}
+                  />
+              </Typography>
+              <Typography variant="h2" component="h2" sx={{fontSize: {lg: 45, md: 39, xs: 33}}}>
+                is about to hit the blockchain.
+              </Typography>
+              <GreyText>
+                Let&apos;s join our community
+              </GreyText>
               <JoinButton size="large" variant="contained" color="secondary">Join Discord</JoinButton>
             </Grid>
 
