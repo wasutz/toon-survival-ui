@@ -6,6 +6,8 @@ const HeroSection = styled.section`
     width: 100%;
     flex: 1;
     display: flex;
+    position: relative;
+    align-items: center;
 `
 
 const JoinButton =  styled(Button)`
