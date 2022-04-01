@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import {useEffect, useState} from 'react';
-import { clearInterval } from 'timers';
 
 interface HeroImageProps {
     width: number;
