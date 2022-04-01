@@ -6,7 +6,7 @@ import HeroImage from '../components/HeroImage';
 import {HeroSection, JoinButton, GreyText}  from '../styles/Home.styled';
 import Typewriter from 'typewriter-effect';
 
-const Home: NextPage = () => {
+const HomePage: NextPage = () => {
   return (
     <Layout>
       <Head>
@@ -53,4 +53,4 @@ const Home: NextPage = () => {
   )
 }
 
-export default Home
+export default HomePage
