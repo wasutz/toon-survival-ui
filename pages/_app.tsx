@@ -11,12 +11,15 @@ import '@fontsource/roboto/700.css';
 import createEmotionCache from '../utility/createEmotionCache';
 import MUIThemeProvider from '../components/MUIThemeProvider';
 import Head from "next/head";
+import { DAppProvider, Mainnet, Rinkeby } from '@usedapp/core';
 
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
 }
 
 const clientSideEmotionCache = createEmotionCache();
+const CURRENT_CHAIN = process.env.REACT_APP_CHAIN;
+const isMainnet = CURRENT_CHAIN?.toLowerCase() === Mainnet.chainName.toLowerCase();
 
 const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
@@ -28,9 +31,13 @@ const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
           <meta name="viewport" content="initial-scale=1, width=device-width" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <MUIThemeProvider>
-          <Component {...pageProps} />
-        </MUIThemeProvider>
+        <DAppProvider config={{
+          networks: [isMainnet ? Mainnet : Rinkeby]
+        }}>
+          <MUIThemeProvider>
+            <Component {...pageProps} />
+          </MUIThemeProvider>
+        </DAppProvider>
       </CacheProvider>
     </ThemeProvider>
   );

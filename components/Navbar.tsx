@@ -14,6 +14,8 @@ import MenuItem from '@mui/material/MenuItem';
 import LightMode from '@mui/icons-material/LightModeRounded';
 import DarkMode from '@mui/icons-material/DarkModeRounded';
 import Link from "next/link";
+import { useEthers } from '@usedapp/core'
+import LoggedInButton from '../components/LoggedInButton';
 
 const pages = [
     {
@@ -31,6 +33,7 @@ const pages = [
 ];
 
 const Navbar = () => {
+    const {activateBrowserWallet, deactivate, account, error} = useEthers()
     const {resolvedTheme, setTheme} = useTheme();
     const [mounted, setMounted] = useState(false);
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -124,9 +127,13 @@ const Navbar = () => {
                                     : <LightMode htmlColor="#fff" />
                             }
                     </IconButton>
-                    <Button href="#" variant="contained" color="secondary" sx={{ my: 1, mx: 2 }}>
-                        Connect wallet
-                    </Button>
+                    {!account ? (
+                        <Button onClick={() => activateBrowserWallet()} variant="contained" color="secondary" sx={{ my: 1, mx: 2 }}>
+                            Connect wallet
+                        </Button>
+                    ) : (
+                        <LoggedInButton />
+                    )}
                 </Box>
                 </Toolbar>
             </Container>
