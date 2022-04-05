@@ -16,7 +16,7 @@
     "@fontsource/roboto": "^4.5.3",
     "@mui/icons-material": "^5.5.1",
     "@mui/material": "^5.5.2",
-    "@usedapp/core": "^0.12.2",
+    "@usedapp/core": "^0.12.3",
     "next": "12.1.0",
     "next-themes": "^0.1.1",
     "react": "17.0.2",

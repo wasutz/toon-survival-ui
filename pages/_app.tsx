@@ -12,6 +12,7 @@ import createEmotionCache from '../utility/createEmotionCache';
 import MUIThemeProvider from '../components/MUIThemeProvider';
 import Head from "next/head";
 import { DAppProvider, Mainnet, Rinkeby } from '@usedapp/core';
+import { getDefaultProvider } from 'ethers'
 
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
@@ -32,6 +33,11 @@ const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <DAppProvider config={{
+          readOnlyChainId: isMainnet ? Mainnet.chainId : Rinkeby.chainId,
+          readOnlyUrls: {
+            [Mainnet.chainId]: getDefaultProvider('mainnet'),
+            [Rinkeby.chainId]: getDefaultProvider('rinkeby')
+          },
           networks: [isMainnet ? Mainnet : Rinkeby]
         }}>
           <MUIThemeProvider>
