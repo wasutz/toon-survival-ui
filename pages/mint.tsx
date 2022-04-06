@@ -8,8 +8,11 @@ import { BigNumber } from 'ethers';
 import { useEthers } from '@usedapp/core';
 import { getCurrentChainId } from '../helpers/Chain';
 import { getToonSurvivalContract } from '../helpers/Contract';
+import Whitelist from '../helpers/Whitelist';
 import useCallMethod from '../hooks/useCallMethod';
 import useMint from '../hooks/useMint';
+import useWhitelistMint from '../hooks/useWhitelistMint';
+import Stages from '../configs/Stages';
 
 const MintPage: NextPage = () => {
   const {account, chainId} = useEthers()
@@ -19,8 +22,10 @@ const MintPage: NextPage = () => {
   const totalSupply = (useCallMethod(contract, "totalSupply") || BigNumber.from(0)).toNumber();
   const maxSupply = (useCallMethod(contract, "maxSupply") || BigNumber.from(0)).toNumber();
   const cost = useCallMethod(contract, "cost") || BigNumber.from(0);
+  const stage = useCallMethod(contract, "stage");
   const {mintState, mint} = useMint(contract);
-  const mintStatus = mintState?.status;
+  const {whitelistMintState, whitelistMint} = useWhitelistMint(contract);
+  const mintStatus = Stages.PreSale === stage ? whitelistMintState?.status : mintState?.status;
 
   const handleAmountFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(parseInt(e.target.value));
@@ -29,7 +34,13 @@ const MintPage: NextPage = () => {
   const clickMint = () => {
     const costInWei = cost.mul(amount);
 
-    mint(amount, {from: account, value: costInWei})
+    if (Stages.PreSale === stage) {
+      const merkleProof = Whitelist.getProofForAddress(account || '');
+
+      whitelistMint(amount, merkleProof, {from: account, value: costInWei});
+    } else {
+      mint(amount, {from: account, value: costInWei});
+    }
   }
 
   const getMintMessage = (status: string): string => {
@@ -70,7 +81,8 @@ const MintPage: NextPage = () => {
               variant="filled"
               size="small"
               type="number" />
-            <Button onClick={clickMint} variant="contained" disabled={isInvalidChain}>
+            <Button onClick={clickMint} variant="contained"
+              disabled={isInvalidChain || Stages.Pasued === stage}>
               Mint
             </Button>
 
