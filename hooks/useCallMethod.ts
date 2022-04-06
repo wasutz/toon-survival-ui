@@ -1,7 +1,7 @@
 import { useCall } from "@usedapp/core"
 import { Contract } from '@ethersproject/contracts'
 
-const useContractMethod = (contract: Contract, method: string) => {
+const useCallMethod = (contract: Contract, method: string) => {
    const { value } = useCall({
         contract,
         method,
@@ -11,4 +11,4 @@ const useContractMethod = (contract: Contract, method: string) => {
    return value?.[0];
 }
 
-export default useContractMethod
+export default useCallMethod
