@@ -35,8 +35,8 @@ const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
         <DAppProvider config={{
           readOnlyChainId: isMainnet ? Mainnet.chainId : Rinkeby.chainId,
           readOnlyUrls: {
-            [Mainnet.chainId]: getDefaultProvider('mainnet'),
-            [Rinkeby.chainId]: getDefaultProvider('rinkeby')
+            [Mainnet.chainId]: process.env.REACT_APP_MAINNET_NODE || getDefaultProvider('mainnet'),
+            [Rinkeby.chainId]: process.env.REACT_APP_RINKEBY_NODE || getDefaultProvider('rinkeby')
           },
           networks: [isMainnet ? Mainnet : Rinkeby]
         }}>
