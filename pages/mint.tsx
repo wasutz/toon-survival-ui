@@ -2,9 +2,9 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Layout from '../components/Layout';
 import { MintContainer, MintCard } from '../styles/Mint.styled';
-import { Button, Typography, TextField, Alert } from '@mui/material';
+import { Button, Typography, TextField, Alert, Grid } from '@mui/material';
 import React, {useState}  from "react";
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { useEthers } from '@usedapp/core';
 import { getCurrentChainId } from '../helpers/Chain';
 import { getToonSurvivalContract } from '../helpers/Contract';
@@ -12,7 +12,7 @@ import Whitelist from '../helpers/Whitelist';
 import useCallMethod from '../hooks/useCallMethod';
 import useMint from '../hooks/useMint';
 import useWhitelistMint from '../hooks/useWhitelistMint';
-import Stages from '../configs/Stages';
+import {Stages, getStageName} from '../helpers/Stages';
 
 const MintPage: NextPage = () => {
   const {account, chainId} = useEthers()
@@ -21,6 +21,8 @@ const MintPage: NextPage = () => {
   const contract = getToonSurvivalContract(chainId);
   const totalSupply = (useCallMethod(contract, "totalSupply") || BigNumber.from(0)).toNumber();
   const maxSupply = (useCallMethod(contract, "maxSupply") || BigNumber.from(0)).toNumber();
+  const maxMintAmount = (useCallMethod(contract, "maxMintAmount") || BigNumber.from(0)).toNumber();
+  const maxMintAmountPerTx = (useCallMethod(contract, "maxMintAmountPerTx") || BigNumber.from(0)).toNumber();
   const cost = useCallMethod(contract, "cost") || BigNumber.from(0);
   const stage = useCallMethod(contract, "stage");
   const {mintState, mint} = useMint(contract);
@@ -44,6 +46,10 @@ const MintPage: NextPage = () => {
   }
 
   const getMintMessage = (status: string): string => {
+    if (!account) {
+      return 'Please connect your wallet';
+    }
+
     switch (status) {
       case 'PendingSignature':
         return 'Pending for signature';
@@ -69,27 +75,45 @@ const MintPage: NextPage = () => {
         )}
 
         <MintContainer>
-          <MintCard>
-            <Typography variant="h2" component="h2" color="secondary">
-              {totalSupply}/{maxSupply}
-            </Typography>
-            <TextField defaultValue={1}
-              sx={{margin: '1.25rem 0'}}
-              InputProps={{ inputProps: { min: 1, max: 10 } }}
-              hiddenLabel
-              onChange={handleAmountFieldChange}
-              variant="filled"
-              size="small"
-              type="number" />
-            <Button onClick={clickMint} variant="contained"
-              disabled={isInvalidChain || Stages.Pasued === stage}>
-              Mint
-            </Button>
+          <Grid container alignItems="center">
+            <Grid item xs={12} md={6}>
+              <Typography variant="h4" component="h4" color="secondary">
+                Stage: {getStageName(stage)}
+              </Typography>
+              <Typography variant="h4" component="h4" color="secondary">
+                Cost per NFT: {utils.formatEther(cost)} ETH
+              </Typography>
+              <Typography variant="h4" component="h4" color="secondary">
+                Max mint per address: {maxMintAmount}
+              </Typography>
+              <Typography variant="h4" component="h4" color="secondary">
+                Max mint per transaction: {maxMintAmountPerTx}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={6} sx={{padding:"0 1.5rem"}}>
+              <MintCard>
+                <Typography variant="h2" component="h2" color="secondary">
+                  {totalSupply}/{maxSupply}
+                </Typography>
+                <TextField defaultValue={1}
+                  sx={{margin: '1.25rem 0'}}
+                  InputProps={{ inputProps: { min: 1, max: maxMintAmountPerTx } }}
+                  hiddenLabel
+                  onChange={handleAmountFieldChange}
+                  variant="filled"
+                  size="small"
+                  type="number" />
+                <Button onClick={clickMint} variant="contained"
+                  disabled={isInvalidChain || Stages.Pasued === stage || !account}>
+                  Mint
+                </Button>
 
-            <Typography variant="body1" component="h6" color="secondary" sx={{marginTop: '1rem'}}>
-              {getMintMessage(mintStatus)}
-            </Typography>
-          </MintCard>
+                <Typography variant="body1" component="h6" color="secondary" sx={{marginTop: '1rem'}}>
+                  {getMintMessage(mintStatus)}
+                </Typography>
+              </MintCard>
+            </Grid>
+          </Grid>
         </MintContainer>
     </Layout>
   )

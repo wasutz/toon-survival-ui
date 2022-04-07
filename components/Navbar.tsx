@@ -33,7 +33,7 @@ const pages = [
 ];
 
 const Navbar = () => {
-    const {activateBrowserWallet, deactivate, account, error} = useEthers()
+    const {activateBrowserWallet, account} = useEthers()
     const {resolvedTheme, setTheme} = useTheme();
     const [mounted, setMounted] = useState(false);
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
