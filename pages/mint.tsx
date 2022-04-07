@@ -28,6 +28,11 @@ const MintPage: NextPage = () => {
   const {mintState, mint} = useMint(contract);
   const {whitelistMintState, whitelistMint} = useWhitelistMint(contract);
   const mintStatus = Stages.PreSale === stage ? whitelistMintState?.status : mintState?.status;
+  const isWhitelistClaimed = useCallMethod(contract, "whitelistClaimed", [account || '']);
+  const isNotWhitelistOrAlreadyClaimed = account && Stages.PreSale === stage
+    && (!Whitelist.contains(account) || isWhitelistClaimed);
+
+  console.log(mintState)
 
   const handleAmountFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(parseInt(e.target.value));
@@ -48,6 +53,10 @@ const MintPage: NextPage = () => {
   const getMintMessage = (status: string): string => {
     if (!account) {
       return 'Please connect your wallet';
+    }
+
+    if (isNotWhitelistOrAlreadyClaimed) {
+      return 'You are not in the whitelist or already claimed';
     }
 
     switch (status) {
@@ -104,7 +113,8 @@ const MintPage: NextPage = () => {
                   size="small"
                   type="number" />
                 <Button onClick={clickMint} variant="contained"
-                  disabled={isInvalidChain || Stages.Pasued === stage || !account}>
+                  disabled={isInvalidChain || Stages.Pasued === stage || !account
+                    || isNotWhitelistOrAlreadyClaimed}>
                   Mint
                 </Button>
 

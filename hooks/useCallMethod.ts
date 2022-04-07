@@ -1,11 +1,11 @@
 import { useCall } from "@usedapp/core"
 import { Contract } from '@ethersproject/contracts'
 
-const useCallMethod = (contract: Contract, method: string) => {
+const useCallMethod = (contract: Contract, method: string, args: string[] = []) => {
    const { value } = useCall({
         contract,
         method,
-        args: []
+        args
    }) ?? {}
 
    return value?.[0];

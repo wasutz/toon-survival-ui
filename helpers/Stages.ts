@@ -9,7 +9,7 @@ const getStageName = (stage: number) => {
         case Stages.Pasued:
             return "Paused";
         case Stages.PreSale:
-            return "Pre sale";
+            return "Pre Sale";
         case Stages.PublicSale:
             return "Public Sale";
         default:
