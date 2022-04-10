@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Container, Card } from '@mui/material';
+import { Container, Backdrop } from '@mui/material';
 
 const MintContainer = styled(Container)`
     min-height: calc(100vh - 70px);
@@ -9,6 +9,12 @@ const MintContainer = styled(Container)`
     position: relative;
     justify-content: center;
     align-items: center;
+`
+
+const FullWidthContainer = styled.div`
+    width: 100%;
+    height: 100%;
+    position: relative;
 `
 
 const MintCard = styled.section(({theme}) => {
@@ -23,4 +29,12 @@ const MintCard = styled.section(({theme}) => {
     };
 });
 
-export {MintContainer, MintCard};
+const MintBackdrop = styled(Backdrop)(({theme}) => {
+    return {
+        zIndex: theme.zIndex.drawer + 1,
+        color: theme.palette.common.white,
+        position: 'absolute'
+    };
+});
+
+export {MintContainer, FullWidthContainer, MintCard, MintBackdrop};
