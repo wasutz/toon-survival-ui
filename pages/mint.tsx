@@ -2,8 +2,8 @@ import React, {useState}  from "react";
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Layout from '../components/Layout';
-import { MintContainer, FullWidthContainer, MintCard, MintBackdrop } from '../styles/Mint.styled';
-import { Button, Typography, TextField, Alert, Grid, Snackbar, CircularProgress } from '@mui/material';
+import { MintContainer, FullWidthContainer, MintCard } from '../styles/Mint.styled';
+import { Button, Typography, TextField, Grid, Snackbar } from '@mui/material';
 import { BigNumber, utils } from 'ethers';
 import { useEthers } from '@usedapp/core';
 import { getCurrentChainId } from '../helpers/Chain';
@@ -79,17 +79,11 @@ const MintPage: NextPage = () => {
   }
 
   return (
-    <Layout>
+    <Layout showBackdrop={!stage} isInvalidChain={isInvalidChain}>
       <Head>
           <title>Toon Survival | Mint</title>
           <meta name="description" content="Toon Survival NFT" />
       </Head>
-      {isInvalidChain && (
-        <Alert severity="error">
-          Unsupported Chain Id Error - Please check your chain Id.
-        </Alert>
-      )}
-
       <FullWidthContainer>
         <MintContainer>
           <Grid container alignItems="center">
@@ -139,9 +133,6 @@ const MintPage: NextPage = () => {
           onClose={() => setShowError(false)}
           message={errorMessage}
           anchorOrigin={{vertical: 'bottom', horizontal: 'right'}} />
-        <MintBackdrop open={!stage}>
-            <CircularProgress color="inherit" size={56} thickness={4} />
-        </MintBackdrop>
       </FullWidthContainer>
     </Layout>
   )
