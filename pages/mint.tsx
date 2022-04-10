@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Layout from '../components/Layout';
 import { MintContainer, MintCard } from '../styles/Mint.styled';
-import { Button, Typography, TextField, Alert, Grid } from '@mui/material';
+import { Button, Typography, TextField, Alert, Grid, Snackbar } from '@mui/material';
 import React, {useState}  from "react";
 import { BigNumber, utils } from 'ethers';
 import { useEthers } from '@usedapp/core';
@@ -13,10 +13,13 @@ import useCallMethod from '../hooks/useCallMethod';
 import useMint from '../hooks/useMint';
 import useWhitelistMint from '../hooks/useWhitelistMint';
 import {Stages, getStageName} from '../helpers/Stages';
+import {mapErrorMessage} from '../helpers/ErrorMessage';
 
 const MintPage: NextPage = () => {
   const {account, chainId} = useEthers()
   const [amount, setAmount] = useState(1);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const isInvalidChain = getCurrentChainId() !== chainId;
   const contract = getToonSurvivalContract(chainId);
   const totalSupply = (useCallMethod(contract, "totalSupply") || BigNumber.from(0)).toNumber();
@@ -25,14 +28,18 @@ const MintPage: NextPage = () => {
   const maxMintAmountPerTx = (useCallMethod(contract, "maxMintAmountPerTx") || BigNumber.from(0)).toNumber();
   const cost = useCallMethod(contract, "cost") || BigNumber.from(0);
   const stage = useCallMethod(contract, "stage");
-  const {mintState, mint} = useMint(contract);
-  const {whitelistMintState, whitelistMint} = useWhitelistMint(contract);
+  const {mintState, mint, mintResetState} = useMint(contract);
+  const {whitelistMintState, whitelistMint, whitelistResetState} = useWhitelistMint(contract);
   const mintStatus = Stages.PreSale === stage ? whitelistMintState?.status : mintState?.status;
   const isWhitelistClaimed = useCallMethod(contract, "whitelistClaimed", [account || '']);
   const isNotWhitelistOrAlreadyClaimed = account && Stages.PreSale === stage
     && (!Whitelist.contains(account) || isWhitelistClaimed);
 
-  console.log(mintState)
+  if (mintState.errorMessage) {
+    setShowError(true);
+    setErrorMessage(mapErrorMessage(mintState.errorMessage));
+    Stages.PreSale === stage ? whitelistResetState() : mintResetState();
+  }
 
   const handleAmountFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(parseInt(e.target.value));
@@ -113,7 +120,7 @@ const MintPage: NextPage = () => {
                   size="small"
                   type="number" />
                 <Button onClick={clickMint} variant="contained"
-                  disabled={isInvalidChain || Stages.Pasued === stage || !account
+                  disabled={isInvalidChain || Stages.Pasued === stage || !account || !stage
                     || isNotWhitelistOrAlreadyClaimed}>
                   Mint
                 </Button>
@@ -125,6 +132,12 @@ const MintPage: NextPage = () => {
             </Grid>
           </Grid>
         </MintContainer>
+        <Snackbar
+          open={showError}
+          autoHideDuration={3500}
+          onClose={() => setShowError(false)}
+          message={errorMessage}
+          anchorOrigin={{vertical: 'bottom', horizontal: 'right'}} />
     </Layout>
   )
 }
