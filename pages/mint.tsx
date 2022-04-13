@@ -79,7 +79,7 @@ const MintPage: NextPage = () => {
   }
 
   return (
-    <Layout showBackdrop={!stage} isInvalidChain={isInvalidChain}>
+    <Layout showBackdrop={!stage && !isInvalidChain} isInvalidChain={isInvalidChain}>
       <Head>
           <title>Toon Survival | Mint</title>
           <meta name="description" content="Toon Survival NFT" />
