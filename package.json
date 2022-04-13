@@ -17,13 +17,15 @@
     "@mui/icons-material": "^5.5.1",
     "@mui/material": "^5.5.2",
     "@usedapp/core": "^0.12.3",
+    "@walletconnect/web3-provider": "^1.7.7",
     "keccak256": "^1.0.6",
     "merkletreejs": "^0.2.31",
     "next": "12.1.0",
     "next-themes": "^0.1.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "typewriter-effect": "^2.18.2"
+    "typewriter-effect": "^2.18.2",
+    "web3modal": "^1.9.6"
   },
   "devDependencies": {
     "@types/node": "17.0.22",

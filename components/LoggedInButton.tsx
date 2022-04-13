@@ -7,7 +7,6 @@ import ExitToApp from '@mui/icons-material/ExitToApp';
 import { useEthers } from '@usedapp/core';
 import Link from 'next/link';
 
-
 const LoggedInButton = () => {
     const {deactivate, account} = useEthers()
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
