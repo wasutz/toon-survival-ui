@@ -4,7 +4,7 @@ import Head from 'next/head'
 import Layout from '../components/Layout';
 import { MintContainer, FullWidthContainer, MintCard } from '../styles/Mint.styled';
 import { Button, Typography, TextField, Grid, Snackbar } from '@mui/material';
-import { BigNumber, utils } from 'ethers';
+import { BigNumber, utils, constants } from 'ethers';
 import { useEthers } from '@usedapp/core';
 import { getCurrentChainId } from '../helpers/Chain';
 import { getToonSurvivalContract } from '../helpers/Contract';
@@ -31,7 +31,7 @@ const MintPage: NextPage = () => {
   const {mintState, mint, mintResetState} = useMint(contract);
   const {whitelistMintState, whitelistMint, whitelistResetState} = useWhitelistMint(contract);
   const mintStatus = Stages.PreSale === stage ? whitelistMintState?.status : mintState?.status;
-  const isWhitelistClaimed = useCallMethod(contract, "whitelistClaimed", [account || '']);
+  const isWhitelistClaimed = useCallMethod(contract, "whitelistClaimed", [account || constants.AddressZero]);
   const isNotWhitelistOrAlreadyClaimed = account && Stages.PreSale === stage
     && (!Whitelist.contains(account) || isWhitelistClaimed);
 
