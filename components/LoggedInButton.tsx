@@ -2,8 +2,11 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Photo from '@mui/icons-material/Photo';
 import ExitToApp from '@mui/icons-material/ExitToApp';
-import { useEthers } from '@usedapp/core'
+import { useEthers } from '@usedapp/core';
+import Link from 'next/link';
+
 
 const LoggedInButton = () => {
     const {deactivate, account} = useEthers()
@@ -36,6 +39,12 @@ const LoggedInButton = () => {
                 keepMounted
                 open={Boolean(anchorElNav)}
                 onClose={handleCloseNavMenu}>
+                <Link href="/myItems" passHref>
+                    <MenuItem disableRipple>
+                        <Photo fontSize="small" />
+                        My Items
+                    </MenuItem>
+                </Link>
                  <MenuItem onClick={deactivate} disableRipple>
                     <ExitToApp fontSize="small" />
                     Disconnect
