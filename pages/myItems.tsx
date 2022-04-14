@@ -13,7 +13,7 @@ import NftItem from '../components/NftItem';
 const MyItemsPage: NextPage = () => {
     const {account, chainId} = useEthers();
     const isInvalidChain = Boolean(chainId && getCurrentChainId() !== chainId);
-    const contract = getToonSurvivalContract(chainId);
+    const contract = getToonSurvivalContract();
     const tokenIds = useCallMethod(contract, "walletOfOwner", [account || constants.AddressZero]);
 
     return (
