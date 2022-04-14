@@ -12,7 +12,7 @@ const FaqPage: NextPage = () => {
             <title>Toon Survival | FAQ</title>
             <meta name="description" content="Toon Survival NFT" />
         </Head>
-        <FaqContainer maxWidth={'md'}>
+        <FaqContainer maxWidth={'md'} className={'animate__animated animate__fadeIn'}>
           <Typography variant="h2" component="h1">
             FAQ
           </Typography>

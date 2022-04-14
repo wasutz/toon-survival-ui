@@ -22,7 +22,7 @@ const MyItemsPage: NextPage = () => {
                 <title>Toon Survival | My Items</title>
                 <meta name="description" content="Toon Survival Items" />
             </Head>
-            <MyItemsContainer maxWidth={'md'}>
+            <MyItemsContainer maxWidth={'md'} className={'animate__animated animate__fadeIn'}>
                 <Typography variant="h2" component="h1">
                     My Items
                 </Typography>

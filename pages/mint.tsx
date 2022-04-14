@@ -87,7 +87,7 @@ const MintPage: NextPage = () => {
       <FullWidthContainer>
         <MintContainer>
           <Grid container alignItems="center">
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} className={'animate__animated animate__fadeInLeft'}>
               <Typography variant="h4" component="h4" color="secondary">
                 Stage: {getStageName(stage)}
               </Typography>
@@ -101,7 +101,8 @@ const MintPage: NextPage = () => {
                 Max mint per transaction: {maxMintAmountPerTx}
               </Typography>
             </Grid>
-            <Grid item xs={12} md={6} sx={{padding:"0 1.5rem"}}>
+            <Grid item xs={12} md={6} sx={{padding:"0 1.5rem"}}
+              className={'animate__animated animate__fadeInRight'}>
               <MintCard>
                 <Typography variant="h2" component="h2" color="secondary">
                   {totalSupply}/{maxSupply}

@@ -20,7 +20,8 @@ const HomePage: NextPage = () => {
             <Grid item xs={12} md={6} textAlign={"center"} sx={{ display: { xs: 'block', md: 'none', lg: 'none' } }}>
               <HeroImage width={256} height={264}/>
             </Grid>
-            <Grid item xs={12} md={6} sx={{textAlign: {xs: 'center', md: 'left'}}}>
+            <Grid item xs={12} md={6} sx={{textAlign: {xs: 'center', md: 'left'}}}
+              className={'animate__animated animate__fadeInLeft'}>
               <Typography variant="h2" component="h2" sx={{fontSize: {lg: 45, md: 39, xs: 33}}}>
                 A new wave of
               </Typography>
