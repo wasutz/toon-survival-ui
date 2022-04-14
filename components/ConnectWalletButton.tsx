@@ -19,7 +19,7 @@ const ConnectWalletButton = () => {
                 package: WalletConnectProvider,
                 options: {
                     bridge: 'https://bridge.walletconnect.org',
-                    infuraId: '0f50585e04274bcf95af1213c883e09d',
+                    infuraId: process.env.NEXT_PUBLIC_INFURA_ID
                 }
             }
         }
