@@ -27,6 +27,7 @@ const HeroImage = ({width, height}: HeroImageProps) => {
 
     return (
         <Image
+            priority={true}
             className={'animate__animated animate__zoomInRight'}
             src={`/images/${backgrounds[backgroundIndex]}`}
             alt="Hero image"
