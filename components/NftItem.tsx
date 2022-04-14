@@ -18,6 +18,7 @@ const NftItem = ({tokenId, contract}: NftItemProps) => {
     const ipfsURI = useCallMethod(contract, "tokenURI", [tokenId]) || '';
     const [data, setData] = useState<Metadata|undefined>(undefined);
     const [isLoading, setLoading] = useState(false);
+    const showBlurLoading = isLoading || !data;
 
     useEffect(() => {
         if (ipfsURI) {
@@ -39,10 +40,12 @@ const NftItem = ({tokenId, contract}: NftItemProps) => {
     return (
         <Card sx={{margin: '0.5rem'}}>
             <CardMedia
+                className={showBlurLoading
+                    ? 'animate__animated animate__flash animate__slow' : ''}
                 component="img"
                 alt="green iguana"
                 height="300"
-                image={isLoading || !data
+                image={showBlurLoading
                     ? `/images/blur.png`
                     :`${IPFS_BASE_URL}/${data?.image.replace('ipfs://', '')}`} />
             <CardContent sx={{textAlign:'left'}}>
