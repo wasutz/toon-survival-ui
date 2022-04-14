@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Container, Typography } from '@mui/material';
+import { Container, Typography, CircularProgress } from '@mui/material';
 
 const MyItemsContainer = styled(Container)`
     text-align: center;
@@ -7,12 +7,17 @@ const MyItemsContainer = styled(Container)`
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     position: relative;
 `
 
-const NoItemsText =  styled(Typography)`
+const NoItemsText = styled(Typography)`
     color: grey;
     margin-top: 3.5rem;
 `
 
-export {MyItemsContainer, NoItemsText};
+const Progress = styled(CircularProgress)`
+    margin-top: 5rem;
+`
+
+export {MyItemsContainer, NoItemsText, Progress};
