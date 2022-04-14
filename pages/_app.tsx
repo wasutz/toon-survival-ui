@@ -19,7 +19,7 @@ interface MyAppProps extends AppProps {
 }
 
 const clientSideEmotionCache = createEmotionCache();
-const CURRENT_CHAIN = process.env.REACT_APP_CHAIN;
+const CURRENT_CHAIN = process.env.NEXT_PUBLIC_CHAIN;
 const isMainnet = CURRENT_CHAIN?.toLowerCase() === Mainnet.chainName.toLowerCase();
 
 const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
@@ -35,8 +35,8 @@ const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
         <DAppProvider config={{
           readOnlyChainId: isMainnet ? Mainnet.chainId : Rinkeby.chainId,
           readOnlyUrls: {
-            [Mainnet.chainId]: process.env.REACT_APP_MAINNET_NODE || getDefaultProvider('mainnet'),
-            [Rinkeby.chainId]: process.env.REACT_APP_RINKEBY_NODE || getDefaultProvider('rinkeby')
+            [Mainnet.chainId]: process.env.NEXT_PUBLIC_MAINNET_NODE || getDefaultProvider('mainnet'),
+            [Rinkeby.chainId]: process.env.NEXT_PUBLIC_RINKEBY_NODE || getDefaultProvider('rinkeby')
           },
           networks: [isMainnet ? Mainnet : Rinkeby]
         }}>

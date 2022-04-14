@@ -20,7 +20,7 @@ const MintPage: NextPage = () => {
   const [amount, setAmount] = useState(1);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const isInvalidChain = getCurrentChainId() !== chainId;
+  const isInvalidChain = Boolean(chainId && getCurrentChainId() !== chainId);
   const contract = getToonSurvivalContract(chainId);
   const totalSupply = (useCallMethod(contract, "totalSupply") || BigNumber.from(0)).toNumber();
   const maxSupply = (useCallMethod(contract, "maxSupply") || BigNumber.from(0)).toNumber();
