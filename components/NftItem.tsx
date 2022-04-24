@@ -38,13 +38,13 @@ const NftItem = ({tokenId, contract}: NftItemProps) => {
     }, [ipfsURI]);
 
     return (
-        <Card sx={{margin: '0.5rem'}}>
+        <Card sx={{margin: '0.75rem'}}>
             <CardMedia
                 className={showBlurLoading
                     ? 'animate__animated animate__flash animate__slow' : ''}
                 component="img"
-                alt="green iguana"
-                height="300"
+                alt={`Toon survival token id: ${tokenId}`}
+                width="350"
                 image={showBlurLoading
                     ? `/images/blur.png`
                     :`${IPFS_BASE_URL}/${data?.image.replace('ipfs://', '')}`} />
