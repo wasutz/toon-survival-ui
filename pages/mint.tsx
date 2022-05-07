@@ -12,6 +12,7 @@ import Whitelist from '../helpers/Whitelist';
 import useCallMethod from '../hooks/useCallMethod';
 import useMint from '../hooks/useMint';
 import useWhitelistMint from '../hooks/useWhitelistMint';
+import useDutchAuctionMint from '../hooks/useDutchAuctionMint';
 import {Stages, getStageName} from '../helpers/Stages';
 import {mapErrorMessage} from '../helpers/ErrorMessage';
 
@@ -27,31 +28,66 @@ const MintPage: NextPage = () => {
   const maxMintAmount = (useCallMethod(contract, "maxMintAmount") || BigNumber.from(0)).toNumber();
   const maxMintAmountPerTx = (useCallMethod(contract, "maxMintAmountPerTx") || BigNumber.from(0)).toNumber();
   const cost = useCallMethod(contract, "cost") || BigNumber.from(0);
+  const auctionCost = useCallMethod(contract, "dutchAuctionPrice") || BigNumber.from(0);
   const stage = useCallMethod(contract, "stage");
   const {mintState, mint, mintResetState} = useMint(contract);
   const {whitelistMintState, whitelistMint, whitelistResetState} = useWhitelistMint(contract);
-  const mintStatus = Stages.PreSale === stage ? whitelistMintState?.status : mintState?.status;
+  const {auctionMintState, auctionMint, auctionMintResetState} = useDutchAuctionMint(contract);
   const isWhitelistClaimed = useCallMethod(contract, "whitelistClaimed", [account || constants.AddressZero]);
   const isNotWhitelistOrAlreadyClaimed = account && Stages.PreSale === stage
     && (!Whitelist.contains(account) || isWhitelistClaimed);
 
+  const getMintStatus = () => {
+    if (Stages.PreSale === stage) {
+      return whitelistMintState?.status;
+    }
+
+    if (Stages.DutchAuction === stage) {
+      return auctionMintState?.status;
+    }
+
+    return mintState?.status;
+  }
+
+  const resetMintState = () => {
+    if (Stages.PreSale === stage) {
+      return whitelistResetState();
+    }
+
+    if (Stages.DutchAuction === stage) {
+      return auctionMintResetState();
+    }
+
+    return mintResetState();
+  };
+
   if (mintState.errorMessage) {
     setShowError(true);
     setErrorMessage(mapErrorMessage(mintState.errorMessage));
-    Stages.PreSale === stage ? whitelistResetState() : mintResetState();
+    resetMintState();
   }
 
   const handleAmountFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(parseInt(e.target.value));
   };
 
+  const getCost = () => {
+    if (Stages.DutchAuction === stage) {
+      return auctionCost;
+    }
+
+    return cost;
+  }
+
   const clickMint = () => {
-    const costInWei = cost.mul(amount);
+    const costInWei = getCost().mul(amount);
 
     if (Stages.PreSale === stage) {
       const merkleProof = Whitelist.getProofForAddress(account || '');
 
       whitelistMint(amount, merkleProof, {from: account, value: costInWei});
+    } else if (Stages.DutchAuction === stage) {
+      auctionMint(amount, {from: account, value: costInWei});
     } else {
       mint(amount, {from: account, value: costInWei});
     }
@@ -92,7 +128,7 @@ const MintPage: NextPage = () => {
                 Stage: {getStageName(stage)}
               </Typography>
               <Typography variant="h4" component="h4" color="secondary">
-                Cost per NFT: {utils.formatEther(cost)} ETH
+                Cost per NFT: {utils.formatEther(getCost())} ETH
               </Typography>
               <Typography variant="h4" component="h4" color="secondary">
                 Max mint per address: {maxMintAmount}
@@ -122,7 +158,7 @@ const MintPage: NextPage = () => {
                 </Button>
 
                 <Typography variant="body1" component="h6" color="secondary" sx={{marginTop: '1rem'}}>
-                  {getMintMessage(mintStatus)}
+                  {getMintMessage(getMintStatus())}
                 </Typography>
               </MintCard>
             </Grid>
