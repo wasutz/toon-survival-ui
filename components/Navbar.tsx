@@ -112,7 +112,7 @@ const Navbar = () => {
                     {pages.map(page => (
                         <Link key={page.name} href={page.path} passHref={true}>
                             <Button onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'white', display: 'block' }}>
+                                sx={{ my: 2, color: 'white', display: 'block', textAlign: 'center' }}>
                                 {page.name}
                             </Button>
                         </Link>
