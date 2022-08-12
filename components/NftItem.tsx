@@ -12,7 +12,7 @@ interface NftItemProps {
     contract: Contract
 }
 
-const IPFS_BASE_URL = 'https://gateway.pinata.cloud/ipfs/';
+const IPFS_BASE_URL = 'https://nftstorage.link/ipfs/';
 
 const NftItem = ({tokenId, contract}: NftItemProps) => {
     const ipfsURI = useCallMethod(contract, "tokenURI", [tokenId]) || '';
