@@ -12,7 +12,7 @@ import 'animate.css';
 import createEmotionCache from '../utility/createEmotionCache';
 import MUIThemeProvider from '../components/MUIThemeProvider';
 import Head from "next/head";
-import { DAppProvider, Mainnet, Rinkeby } from '@usedapp/core';
+import { DAppProvider, Mainnet, Goerli } from '@usedapp/core';
 import { getDefaultProvider } from 'ethers'
 
 interface MyAppProps extends AppProps {
@@ -34,12 +34,12 @@ const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <DAppProvider config={{
-          readOnlyChainId: isMainnet ? Mainnet.chainId : Rinkeby.chainId,
+          readOnlyChainId: isMainnet ? Mainnet.chainId : Goerli.chainId,
           readOnlyUrls: {
             [Mainnet.chainId]: process.env.NEXT_PUBLIC_MAINNET_NODE || getDefaultProvider('mainnet'),
-            [Rinkeby.chainId]: process.env.NEXT_PUBLIC_RINKEBY_NODE || getDefaultProvider('rinkeby')
+            [Goerli.chainId]: process.env.NEXT_PUBLIC_GOERLI_NODE || getDefaultProvider('goerli')
           },
-          networks: [isMainnet ? Mainnet : Rinkeby]
+          networks: [isMainnet ? Mainnet : Goerli]
         }}>
           <MUIThemeProvider>
             <Component {...pageProps} />

@@ -36,6 +36,7 @@ const MintPage: NextPage = () => {
   const isWhitelistClaimed = useCallMethod(contract, "whitelistClaimed", [account || constants.AddressZero]);
   const isNotWhitelistOrAlreadyClaimed = account && Stages.PreSale === stage
     && (!Whitelist.contains(account) || isWhitelistClaimed);
+  const isShowBackdrop = stage === undefined && !isInvalidChain;
 
   const getMintStatus = () => {
     if (Stages.PreSale === stage) {
@@ -115,7 +116,7 @@ const MintPage: NextPage = () => {
   }
 
   return (
-    <Layout showBackdrop={!stage && !isInvalidChain} isInvalidChain={isInvalidChain}>
+    <Layout showBackdrop={isShowBackdrop} isInvalidChain={isInvalidChain}>
       <Head>
           <title>Toon Survival | Mint</title>
           <meta name="description" content="Toon Survival NFT" />
