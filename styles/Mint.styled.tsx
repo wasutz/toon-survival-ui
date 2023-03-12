@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Container, Backdrop } from '@mui/material';
+import { Container, Backdrop, Button } from '@mui/material';
 
 const MintContainer = styled(Container)`
     min-height: calc(100vh - 70px);
@@ -37,4 +37,8 @@ const MintBackdrop = styled(Backdrop)(({theme}) => {
     };
 });
 
-export {MintContainer, FullWidthContainer, MintCard, MintBackdrop};
+const MintButton = styled(Button)`
+    margin-top: 1.5rem;
+`;
+
+export {MintContainer, FullWidthContainer, MintCard, MintBackdrop, MintButton};

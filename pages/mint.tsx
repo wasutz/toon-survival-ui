@@ -2,8 +2,8 @@ import React, {useState}  from "react";
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Layout from '../components/Layout';
-import { MintContainer, FullWidthContainer, MintCard } from '../styles/Mint.styled';
-import { Button, Typography, TextField, Grid, Snackbar } from '@mui/material';
+import { MintContainer, FullWidthContainer, MintCard, MintButton } from '../styles/Mint.styled';
+import { Typography, TextField, Grid, Snackbar } from '@mui/material';
 import { BigNumber, utils, constants } from 'ethers';
 import { useEthers } from '@usedapp/core';
 import { getCurrentChainId } from '../helpers/Chain';
@@ -15,12 +15,14 @@ import useWhitelistMint from '../hooks/useWhitelistMint';
 import useDutchAuctionMint from '../hooks/useDutchAuctionMint';
 import {Stages, getStageName} from '../helpers/Stages';
 import {mapErrorMessage} from '../helpers/ErrorMessage';
+import {Turnstile} from '@marsidev/react-turnstile'
 
 const MintPage: NextPage = () => {
   const {account, chainId} = useEthers()
   const [amount, setAmount] = useState(1);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState('');
   const isInvalidChain = Boolean(chainId && getCurrentChainId() !== chainId);
   const contract = getToonSurvivalContract();
   const totalSupply = (useCallMethod(contract, "totalSupply") || BigNumber.from(0)).toNumber();
@@ -37,6 +39,7 @@ const MintPage: NextPage = () => {
   const isNotWhitelistOrAlreadyClaimed = account && Stages.PreSale === stage
     && (!Whitelist.contains(account) || isWhitelistClaimed);
   const isShowBackdrop = stage === undefined && !isInvalidChain;
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
   const getMintStatus = () => {
     if (Stages.PreSale === stage) {
@@ -80,8 +83,44 @@ const MintPage: NextPage = () => {
     return cost;
   }
 
-  const clickMint = () => {
+  const verifyTurnstile = async () => {
+    try {
+      if (!turnstileSiteKey) {
+        return {
+          json: () => {
+            return {
+              success: true
+            }
+          }
+        }
+      }
+
+      return fetch('/api/verifyTurnstile', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          token: turnstileToken
+        })
+      })
+    } catch (error) {
+      return {
+        json: () => {}
+      };
+    }
+  }
+
+  const clickMint = async () => {
     const costInWei = getCost().mul(amount);
+
+    const response = await (await verifyTurnstile()).json();
+    if (!response?.success) {
+      setShowError(true);
+      setErrorMessage('Invalid signature');
+      resetMintState();
+      return;
+    }
 
     if (Stages.PreSale === stage) {
       const merkleProof = Whitelist.getProofForAddress(account || '');
@@ -115,6 +154,10 @@ const MintPage: NextPage = () => {
     }
   }
 
+  const onSuccessTurnStile = (token: string) => {
+    setTurnstileToken(token);
+  }
+
   return (
     <Layout showBackdrop={isShowBackdrop} isInvalidChain={isInvalidChain}>
       <Head>
@@ -138,7 +181,7 @@ const MintPage: NextPage = () => {
                 Max mint per transaction: {maxMintAmountPerTx}
               </Typography>
             </Grid>
-            <Grid item xs={12} md={6} sx={{padding:"0 1.5rem"}}
+            <Grid item xs={12} md={6} sx={{padding:"0 2.5rem"}}
               className={'animate__animated animate__fadeInRight'}>
               <MintCard>
                 <Typography variant="h2" component="h2" color="secondary">
@@ -152,11 +195,16 @@ const MintPage: NextPage = () => {
                   variant="filled"
                   size="small"
                   type="number" />
-                <Button onClick={clickMint} variant="contained"
+
+                {turnstileSiteKey && (
+                  <Turnstile siteKey={turnstileSiteKey} onSuccess={onSuccessTurnStile} />
+                )}
+                <MintButton onClick={clickMint} variant="contained"
                   disabled={isInvalidChain || Stages.Pasued === stage || !account || !stage
-                    || isNotWhitelistOrAlreadyClaimed}>
+                    || isNotWhitelistOrAlreadyClaimed
+                    || (turnstileSiteKey && !turnstileToken)}>
                   Mint
-                </Button>
+                </MintButton>
 
                 <Typography variant="body1" component="h6" color="secondary" sx={{marginTop: '1rem'}}>
                   {getMintMessage(getMintStatus())}
